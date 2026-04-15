@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Caoba – grow your glow · Investigación de Mercado</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  :root {
+    --cream:        #F5F0E8;
+    --parchment:    #EDE5D4;
+    --caoba:        #8B4A2F;
+    --caoba-light:  #B5714F;
+    --caoba-dark:   #5C2E18;
+    --gold:         #C8973A;
+    --gold-light:   #E8C87A;
+    --forest:       #3A5A40;
+    --forest-light: #5C8A62;
+    --ink:          #1A1208;
+    --muted:        #7A6A55;
+    --border:       rgba(139,74,47,0.15);
+    --shadow:       0 4px 32px rgba(26,18,8,0.10);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    opacity: 0.4;
+  }
+
+  /* ── HEADER ── */
+  header {
+    position: relative; z-index: 10;
+    padding: 3rem 2rem 2.5rem;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(180deg, var(--parchment) 0%, var(--cream) 100%);
+  }
+  .brand-eyebrow {
+    display: inline-block;
+    font-size: 10px; font-weight: 500;
+    letter-spacing: 0.25em; text-transform: uppercase;
+    color: var(--caoba);
+    border: 1px solid var(--caoba-light);
+    padding: 5px 14px; border-radius: 20px;
+    margin-bottom: 1.25rem;
+    opacity: 0; animation: fadeUp 0.6s 0.1s ease forwards;
+  }
+  .brand-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.8rem, 7vw, 5rem);
+    font-weight: 300; line-height: 1.05;
+    color: var(--caoba-dark);
+    letter-spacing: -0.01em;
+    opacity: 0; animation: fadeUp 0.7s 0.2s ease forwards;
+  }
+  .brand-title em { font-style: italic; color: var(--gold); font-weight: 400; }
+  .brand-subtitle {
+    font-size: 14px; font-weight: 300;
+    color: var(--muted); letter-spacing: 0.05em;
+    margin-top: 0.75rem;
+    opacity: 0; animation: fadeUp 0.7s 0.35s ease forwards;
+  }
+  .header-meta {
+    display: flex; align-items: center; justify-content: center;
+    gap: 1rem; margin-top: 2rem; flex-wrap: wrap;
+    opacity: 0; animation: fadeUp 0.7s 0.45s ease forwards;
+  }
+  .meta-pill {
+    display: flex; align-items: center; gap: 8px;
+    background: white; border: 1px solid var(--border);
+    border-radius: 40px; padding: 8px 16px;
+    font-size: 12px; color: var(--muted); font-weight: 400;
+    box-shadow: 0 2px 12px rgba(139,74,47,0.06);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .meta-pill:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(139,74,47,0.12); }
+  .meta-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--caoba-light); flex-shrink: 0; }
+
+  /* ── TABS ── */
+  .tabs-wrapper {
+    position: sticky; top: 0; z-index: 20;
+    background: rgba(245,240,232,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    display: flex; gap: 0; overflow-x: auto;
+  }
+  .tab-btn {
+    position: relative;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px; font-weight: 400;
+    color: var(--muted);
+    background: transparent; border: none;
+    padding: 1rem 1.5rem; cursor: pointer;
+    letter-spacing: 0.03em;
+    transition: color 0.25s;
+    white-space: nowrap;
+  }
+  .tab-btn::after {
+    content: '';
+    position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
+    background: var(--caoba);
+    transform: scaleX(0); transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+  }
+  .tab-btn.active { color: var(--caoba-dark); font-weight: 500; }
+  .tab-btn.active::after { transform: scaleX(1); }
+  .tab-btn:hover:not(.active) { color: var(--caoba); }
+
+  /* ── MAIN ── */
+  main { position: relative; z-index: 1; padding: 2.5rem 2rem 5rem; max-width: 1200px; margin: 0 auto; }
+
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; animation: fadeIn 0.4s ease; }
+
+  /* ── INSIGHT BANNER ── */
+  .insight-banner {
+    background: linear-gradient(135deg, var(--caoba-dark) 0%, var(--caoba) 60%, var(--gold) 100%);
+    border-radius: 16px; padding: 1.5rem 2rem;
+    margin-bottom: 2.5rem;
+    display: flex; align-items: flex-start; gap: 1.25rem;
+    color: white; position: relative; overflow: hidden;
+  }
+  .insight-banner::after {
+    content: '✦';
+    position: absolute; right: 1.5rem; top: 50%; transform: translateY(-50%);
+    font-size: 4rem; opacity: 0.10; pointer-events: none;
+  }
+  .insight-icon {
+    width: 42px; height: 42px; border-radius: 50%;
+    background: rgba(255,255,255,0.18);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; flex-shrink: 0;
+  }
+  .insight-text { flex: 1; }
+  .insight-text strong { font-size: 15px; font-weight: 500; display: block; margin-bottom: 4px; }
+  .insight-text p { font-size: 13px; opacity: 0.85; line-height: 1.55; font-weight: 300; }
+
+  /* ── STATS ROW ── */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 12px; margin-bottom: 2.5rem;
+  }
+  .stat-card {
+    background: white; border: 1px solid var(--border);
+    border-radius: 12px; padding: 1rem 1.25rem;
+    text-align: center;
+    box-shadow: 0 2px 16px rgba(139,74,47,0.05);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .stat-card:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
+  .stat-number {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.2rem; font-weight: 600;
+    color: var(--caoba); line-height: 1;
+  }
+  .stat-label { font-size: 11px; color: var(--muted); margin-top: 6px; letter-spacing: 0.03em; line-height: 1.4; }
+
+  /* ── SECTION HEADERS ── */
+  .section-header {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 1.25rem; margin-top: 2rem;
+  }
+  .section-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem; font-weight: 400; font-style: italic;
+    color: var(--gold); min-width: 1.5rem;
+  }
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.4rem; font-weight: 400;
+    color: var(--caoba-dark); letter-spacing: 0.01em;
+    white-space: nowrap;
+  }
+  .section-line { flex: 1; height: 1px; background: var(--border); }
+
+  /* ── CHART GRID ── */
+  .chart-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1.25rem; margin-bottom: 1rem;
+  }
+  .chart-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 16px rgba(139,74,47,0.05);
+    transition: transform 0.25s, box-shadow 0.25s;
+    opacity: 0; animation: fadeUp 0.55s ease forwards;
+    animation-play-state: paused;
+  }
+  .chart-card:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
+  .chart-card.full-width { grid-column: 1 / -1; }
+
+  .q-tag {
+    display: inline-block;
+    font-size: 10px; font-weight: 500; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--caoba);
+    background: rgba(139,74,47,0.07);
+    padding: 3px 10px; border-radius: 20px;
+    margin-bottom: 0.5rem;
+  }
+  .q-text {
+    font-size: 13px; line-height: 1.55;
+    color: var(--ink); margin-bottom: 1.1rem;
+    font-weight: 400;
+  }
+  .chart-wrap { position: relative; width: 100%; }
+
+  /* ── LEGEND ── */
+  .legend { display: flex; flex-wrap: wrap; gap: 7px 12px; margin-top: 0.85rem; }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--muted); }
+  .legend-dot { width: 9px; height: 9px; border-radius: 2px; flex-shrink: 0; }
+
+  /* ── FINDING CARD ── */
+  .finding-card {
+    border-left: 3px solid var(--gold);
+    background: rgba(200,151,58,0.06);
+    border-radius: 0 12px 12px 0;
+    padding: 1rem 1.25rem;
+    margin-top: 2rem;
+    font-size: 13px; color: var(--muted); line-height: 1.6;
+  }
+  .finding-card strong { color: var(--caoba-dark); font-weight: 500; }
+
+  /* ── FOOTER ── */
+  footer {
+    position: relative; z-index: 1;
+    text-align: center; padding: 2rem;
+    border-top: 1px solid var(--border);
+    background: var(--parchment);
+  }
+  .footer-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.4rem; font-weight: 300; font-style: italic;
+    color: var(--caoba); letter-spacing: 0.05em;
+  }
+  .footer-sub { font-size: 11px; color: var(--muted); margin-top: 6px; letter-spacing: 0.08em; text-transform: uppercase; }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 640px) {
+    header { padding: 2rem 1.25rem 1.75rem; }
+    main { padding: 1.5rem 1rem 3rem; }
+    .chart-grid { grid-template-columns: 1fr; }
+    .insight-banner { flex-direction: column; gap: 0.75rem; }
+    .stats-row { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <span class="brand-eyebrow">Investigación de Mercado · 2026</span>
+  <h1 class="brand-title">Caoba <em>– grow your glow</em></h1>
+  <p class="brand-subtitle">· Segmentación del mercado ·</p>
+  <div class="header-meta">
+    <div class="meta-pill"><span class="meta-dot"></span>20 compradores encuestados</div>
+    <div class="meta-pill"><span class="meta-dot" style="background:var(--gold)"></span>20 consumidores encuestados</div>
+    <div class="meta-pill"><span class="meta-dot" style="background:var(--forest-light)"></span>Aceite capilar fortalecedor</div>
+  </div>
+</header>
+
+<!-- TABS -->
+<nav class="tabs-wrapper" role="tablist">
+  <button class="tab-btn active" role="tab" aria-selected="true"  onclick="switchTab(event,'compradores')">· 3.3.1 Compradores · &nbsp;</button>
+  <button class="tab-btn"        role="tab" aria-selected="false" onclick="switchTab(event,'consumidores')">· 3.3.2 Consumidores · &nbsp;</button>
+</nav>
+
+<main>
+
+  <!-- ══════════════════════════════════════════
+       PANEL COMPRADORES
+  ══════════════════════════════════════════ -->
+  <section id="panel-compradores" class="tab-panel active" role="tabpanel">
+
+    <div class="insight-banner">
+      <div class="insight-icon">💡</div>
+      <div class="insight-text">
+        <strong>Hallazgo clave — Compradores</strong>
+        <p>El 79% compra productos capilares mensual o bimestralmente. Los ingredientes naturales y el precio son los dos argumentos más poderosos para conquistar a una compradora nueva. El envase con gotero domina como presentación preferida.</p>
+      </div>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-card"><div class="stat-number">79%</div><div class="stat-label">Compra frecuente (mensual o bimestral)</div></div>
+      <div class="stat-card"><div class="stat-number">47%</div><div class="stat-label">Elegiría marca nueva por precio</div></div>
+      <div class="stat-card"><div class="stat-number">42%</div><div class="stat-label">Confía en ingredientes naturales</div></div>
+      <div class="stat-card"><div class="stat-number">58%</div><div class="stat-label">Ha comprado marcas artesanales antes</div></div>
+    </div>
+
+    <!-- SECCIÓN 1 -->
+    <div class="section-header">
+      <span class="section-num">01</span>
+      <h2 class="section-title">Hábitos de compra</h2>
+      <div class="section-line"></div>
+    </div>
+
+    <div class="chart-grid">
+      <div class="chart-card">
+        <span class="q-tag">Pregunta 1</span>
+        <p class="q-text">¿Con qué frecuencia compras productos de cuidado capilar?</p>
+        <div class="chart-wrap" style="height:220px"><canvas id="c1" role="img" aria-label="Frecuencia de compra capilar">Mensual 7, Cada 2-3 meses 8, Semestral 3, No compra 1</canvas></div>
+        <div class="legend" id="leg1"></div>
+      </div>
+
+      <div class="chart-card">
+        <span class="q-tag">Pregunta 2</span>
+        <p class="q-text">¿Cuánto gastas habitualmente en un producto capilar?</p>
+        <div class="chart-wrap" style="height:220px"><canvas id="c2" role="img" aria-label="Gasto habitual en productos capilares">$30k-$60k 7, $60k-$100k 5, Más de $100k 6</canvas></div>
+        <div class="legend" id="leg2"></div>
+      </div>
+
+      <div class="chart-card">
+        <span class="q-tag">Pregunta 3</span>
+        <p class="q-text">¿Dónde prefieres comprar productos capilares?</p>
+        <div class="chart-wrap" style="height:220px"><canvas id="c3" role="img" aria-label="Canal de compra preferido">Tienda física 8, Farmacia/Droguería 6, Redes sociales 3, Página web 3</canvas></div>
+        <div class="legend" id="leg3"></div>
+      </div>
+
+      <div class="chart-card">
+        <span class="q-tag">Pregunta 6</span>
+        <p class="q-text">¿Has comprado alguna vez aceites capilares artesanales o de marca independiente?</p>
+        <div class="chart-wrap" style="height:220px"><canvas id="c6" role="img" aria-label="Compra previa de marcas artesanales">Sí alguna vez 9, No nunca 9, Sí con frecuencia 1</canvas></div>
+        <div class="legend" id="leg6"></div>
+      </div>
+    </div>
+
+    <!-- SECCIÓN 2 -->
+    <div class="section-header">
+      <span class="section-num">02</span>
+      <h2 class="section-title">Decisión de compra y valores</h2>
+      <div class="section-line"></div>
+    </div>
+
+    <div class="chart-grid">
+      <div class="chart-card">
+        <span class="q-tag">Pregunta 4</span>
+        <p class="q-text">¿Qué te genera más confianza al comprar un aceite capilar?</p>
+        <div class="chart-wrap" style="height:220px"><canvas id="c4" role="img" aria-label="Factor de confianza al comprar">Ingredientes naturales 8, Marca reconocida 7, Reseñas online 2, Recomendación amigos 2</canvas></div>
+        <div class="legend" id="leg4"></div>
+      </div>
+
+      <div class="chart-card">
+        <span class="q-tag">Pregunta 5</span>
+        <p class="q-text">¿Qué te haría preferir una marca nueva sobre una establecida?</p>
+        <div class="chart-wrap" style="height:220px"><canvas id="c5" role="img" aria-label="Razón para preferir marca nueva">Precio 9, Ingredientes 6, Historia de la marca 4, Empaque 2</canvas></div>
+        <div class="legend" id="leg5"></div>
+      </div>
+
+      <div class="chart-card">
+        <span class="q-tag">Pregunta 7</span>
+        <p class="q-text">¿Qué presentación considerarías más conveniente al momento de comprar un aceite capilar?</p>
+        <div class="chart-wrap" style="height:220px"><canvas id="c7" role="img" aria-label="Presentación preferida del producto">Envase con gotero 12, Gotero simple 4, Envase con dispensador 2, Spray 1, Ampolleta 1</canvas></div>
+        <div class="legend" id="leg7"></div>
+      </div>
+
+      <div class="chart-card">
+        <span class="q-tag">Pregunta 8</span>
+        <p class="q-text">¿Qué información en el empaque es indispensable para que compres el producto?</p>
+        <div class="chart-wrap" style="height:220px"><canvas id="c8" role="img" aria-label="Información indispensable en empaque">Ingredientes 14, Beneficios visibles 12, Modo de uso 13, Certificaciones 4</canvas></div>
+        <div class="legend" id="leg8"></div>
+      </div>
+    </div>
+
+    <div class="finding-card">
+      <strong>✦ Implicación estratégica:</strong> Caoba debe posicionar sus ingredientes naturales como su principal propuesta de valor y eje de confianza, incluso por encima del reconocimiento de marca. Su precio de $99.900, percibido como accesible dentro de un segmento medio-alto, junto con la comercialización a través de canales digitales, se consolida como la estrategia más efectiva para la entrada en el mercado.
+    </div>
+
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       PANEL CONSUMIDORES
+  ══════════════════════════════════════════ -->
+  <section id="panel-consumidores" class="tab-panel" role="tabpanel">
+
+    <div class="insight-banner" style="background: linear-gradient(135deg, var(--forest) 0%, var(--forest-light) 60%, var(--gold-light) 100%);">
+      <div class="insight-icon">🌿</div>
+      <div class="insight-text">
+        <strong>Hallazgo clave — Consumidores</strong>
+        <p>El 70% reporta caída activa como problema. El 50% ya practica hair oiling y el 90% del público objetivo tiene entre 18 y 24 años. El aceite de romero lidera en confianza (52%) y la aplicación 2-3 veces por semana es la frecuencia dominante.</p>
+      </div>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-card"><div class="stat-number">70%</div><div class="stat-label">Reporta caída activa como problema</div></div>
+      <div class="stat-card"><div class="stat-number">50%</div><div class="stat-label">Ya practica hair oiling activamente</div></div>
+      <div class="stat-card"><div class="stat-number">52%</div><div class="stat-label">Prefiere aceite de romero</div></div>
+      <div class="stat-card"><div class="stat-number">90%</div><div class="stat-label">Tiene entre 18 y 24 años</div></div>
+    </div>
+
+    <!-- SECCIÓN 1 -->
+    <div class="section-header">
+      <span class="section-num">01</span>
+      <h2 class="section-title">Problemas y hábitos capilares</h2>
+      <div class="section-line"></div>
+    </div>
+
+    <div class="chart-grid">
+      <div class="chart-card">
+        <span class="q-tag">Pregunta 1</span>
+        <p class="q-text">¿Cuál es tu principal problema capilar actualmente? (máximo 3)</p>
+        <div class="chart-wrap" style="height:220px"><canvas id="d1" role="img" aria-label="Problema capilar principal">Caída 14, Cabello débil 9, Crecimiento lento 9, Falta de brillo 4</canvas></div>
+        <div class="legend" id="dleg1"></div>
+      </div>
+
+      <div class="chart-card">
+        <span class="q-tag">Pregunta 2</span>
+        <p class="q-text">¿Usas actualmente algún producto para el crecimiento o fortalecimiento capilar?</p>
+        <div class="chart-wrap" style="height:220px"><canvas id="d2" role="img" aria-label="Uso actual de productos capilares">Sí regularmente 8, Sí ocasionalmente 6, No pero me interesa 3, No 2</canvas></div>
+        <div class="legend" id="dleg2"></div>
+      </div>
+
+      <div class="chart-card">
+        <span class="q-tag">Pregunta 3</span>
+        <p class="q-text">¿Conoces o has practicado la técnica de hair oiling?</p>
+        <div class="chart-wrap" style="height:220px"><canvas id="d3" role="img" aria-label="Conocimiento del hair oiling">Sí y la practico 10, La conozco no la uso 8, No la conozco 2</canvas></div>
+        <div class="legend" id="dleg3"></div>
+      </div>
+
+      <div class="chart-card">
+        <span class="q-tag">Pregunta 8</span>
+        <p class="q-text">¿Cuál es tu rango de edad?</p>
+        <div class="chart-wrap" style="height:220px"><canvas id="d8" role="img" aria-label="Rango de edad de las consumidores">18-24 años 17, 25-34 años 1</canvas></div>
+        <div class="legend" id="dleg8"></div>
+      </div>
+    </div>
+
+    <!-- SECCIÓN 2 -->
+    <div class="section-header">
+      <span class="section-num">02</span>
+      <h2 class="section-title">Preferencias y expectativas del producto</h2>
+      <div class="section-line"></div>
+    </div>
+
+    <div class="chart-grid">
+      <div class="chart-card">
+        <span class="q-tag">Pregunta 4</span>
+        <p class="q-text">¿Con qué frecuencia te aplicarías un aceite capilar fortalecedor?</p>
+        <div class="chart-wrap" style="height:220px"><canvas id="d4" role="img" aria-label="Frecuencia de uso deseada">2-3 veces/semana 9, Una vez/semana 4, Diario 4, Ocasionalmente 3</canvas></div>
+        <div class="legend" id="dleg4"></div>
+      </div>
+
+      <div class="chart-card">
+        <span class="q-tag">Pregunta 5</span>
+        <p class="q-text">¿Qué ingrediente natural te genera más confianza para el cuidado capilar?</p>
+        <div class="chart-wrap" style="height:220px"><canvas id="d5" role="img" aria-label="Ingrediente de mayor confianza">Aceite de romero 11, Aceite de ricino 8, Aceite de coco 2</canvas></div>
+        <div class="legend" id="dleg5"></div>
+      </div>
+
+      <div class="chart-card">
+        <span class="q-tag">Pregunta 6</span>
+        <p class="q-text">¿Qué beneficio es más importante para ti en un aceite capilar?</p>
+        <div class="chart-wrap" style="height:220px"><canvas id="d6" role="img" aria-label="Beneficio más importante">Menos caída 9, Crecimiento acelerado 5, Hidratación profunda 5, Mayor brillo 1</canvas></div>
+        <div class="legend" id="dleg6"></div>
+      </div>
+
+      <div class="chart-card">
+        <span class="q-tag">Pregunta 7</span>
+        <p class="q-text">¿Cuánto tiempo dejas actuar el aceite antes de lavarlo?</p>
+        <div class="chart-wrap" style="height:220px"><canvas id="d7" role="img" aria-label="Tiempo de actuación del aceite">Toda la noche 8, Menos de 30 min 5, Entre 30 min y 2 horas 5</canvas></div>
+        <div class="legend" id="dleg7"></div>
+      </div>
+    </div>
+
+    <div class="finding-card" style="border-left-color:var(--forest-light); background:rgba(58,90,64,0.05);">
+      <strong>✦ Implicación estratégica:</strong> Caoba debe posicionarse como un aceite capilar fortalecedor enfocado en combatir la caída y el debilitamiento del cabello, integrando ingredientes clave como el romero y el ricino, reconocidos por sus beneficios en el crecimiento y la salud capilar. Esta propuesta se alinea directamente con las principales necesidades del mercado objetivo. Además, una frecuencia de uso estimada de 2 a 3 veces por semana proyecta un consumo aproximado de un frasco cada 6 a 8 semanas, lo que respalda un modelo de recompra sostenible.
+    </div>
+
+  </section>
+
+</main>
+
+<footer>
+  <div class="footer-logo">Caoba – grow your glow</div>
+  <p class="footer-sub">· Gestión de Proyectos · Pontificia Universidad Javeriana · Bogotá, Colombia ·</p>
+</footer>
+
+<script>
+/* ══ PALETA ══ */
+const C = {
+  caoba:  ['#8B4A2F','#B5714F','#5C2E18','#D4956E','#3D1A09'],
+  gold:   ['#C8973A','#E8C87A','#8A6020','#F0D898','#5A3E10'],
+  forest: ['#3A5A40','#5C8A62','#1E3A24','#8AB890','#0E2212'],
+  warm:   ['#A0522D','#CD853F','#6B3A1F','#DEB887','#8B6914'],
+};
+
+const TT = {
+  backgroundColor: '#1A1208',
+  titleColor: '#F5F0E8',
+  bodyColor: 'rgba(245,240,232,0.75)',
+  padding: 10, cornerRadius: 8,
+  callbacks: { label: ctx => {
+    const total = ctx.dataset.data.reduce((a,b) => a+b, 0);
+    return ` ${ctx.raw} respuestas · ${Math.round(ctx.raw/total*100)}%`;
+  }}
+};
+
+function makeLegend(id, labels, colors, data) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const total = data.reduce((a,b) => a+b, 0);
+  el.innerHTML = labels.map((l,i) =>
+    `<span class="legend-item"><span class="legend-dot" style="background:${colors[i%colors.length]}"></span>${l}&nbsp;<strong style="color:var(--caoba);font-size:11px">${Math.round(data[i]/total*100)}%</strong></span>`
+  ).join('');
+}
+
+function makeBar(id, labels, data, pal, legId) {
+  const colors = C[pal];
+  new Chart(document.getElementById(id), {
+    type: 'bar',
+    data: { labels, datasets: [{ data, backgroundColor: colors.slice(0,data.length), borderRadius: 6, borderSkipped: false }] },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: TT },
+      scales: {
+        y: { beginAtZero: true, ticks: { stepSize: 1, color: '#9A8A75', font: { size: 11, family: "'DM Sans'" } }, grid: { color: 'rgba(139,74,47,0.07)' }, border: { display: false } },
+        x: { ticks: { color: '#9A8A75', font: { size: 11, family: "'DM Sans'" }, maxRotation: 25 }, grid: { display: false }, border: { display: false } }
+      }
+    }
+  });
+  makeLegend(legId, labels, colors, data);
+}
+
+function makeDoughnut(id, labels, data, pal, legId) {
+  const colors = C[pal];
+  new Chart(document.getElementById(id), {
+    type: 'doughnut',
+    data: { labels, datasets: [{ data, backgroundColor: colors.slice(0,data.length), borderWidth: 3, borderColor: '#F5F0E8', hoverOffset: 6 }] },
+    options: {
+      responsive: true, maintainAspectRatio: false, cutout: '62%',
+      plugins: { legend: { display: false }, tooltip: TT }
+    }
+  });
+  makeLegend(legId, labels, colors, data);
+}
+
+/* ══ COMPRADORES ══ */
+makeBar      ('c1', ['Mensual','Cada 2-3 meses','Semestral','No compra'],                [7,8,3,1],    'caoba',  'leg1');
+makeDoughnut ('c2', ['$30k–$60k','$60k–$100k','Más de $100k'],                           [7,5,6],      'gold',   'leg2');
+makeBar      ('c3', ['Tienda física','Farmacia/Droguería','Redes sociales','Página web'], [8,6,3,3],    'forest', 'leg3');
+makeDoughnut ('c4', ['Ingredientes naturales','Marca reconocida','Reseñas online','Recomendación'],[8,7,2,2],'warm','leg4');
+makeBar      ('c5', ['Precio','Ingredientes','Historia de marca','Empaque'],              [9,6,4,2],    'caoba',  'leg5');
+makeDoughnut ('c6', ['Sí, alguna vez','No, nunca','Sí, con frecuencia'],                 [9,9,1],      'forest', 'leg6');
+makeBar      ('c7', ['Envase con gotero','Gotero simple','Con dispensador','Spray','Ampolleta'],[12,4,2,1,1],'gold','leg7');
+makeBar      ('c8', ['Ingredientes','Modo de uso','Beneficios visibles','Certificaciones'],[14,13,12,4],'warm','leg8');
+
+/* ══ CONSUMIDORES ══ */
+makeBar      ('d1', ['Caída','Cabello débil','Crecimiento lento','Falta de brillo'],     [14,9,9,4],   'caoba',  'dleg1');
+makeDoughnut ('d2', ['Sí, regularmente','Sí, ocasionalmente','No, me interesa','No'],    [8,6,3,2],    'forest', 'dleg2');
+makeDoughnut ('d3', ['Sí, la practico','La conozco, no la uso','No la conozco'],         [10,8,2],     'gold',   'dleg3');
+makeBar      ('d4', ['2-3 veces/semana','Una vez/semana','Diario','Ocasionalmente'],     [9,4,4,3],    'caoba',  'dleg4');
+makeBar      ('d5', ['Aceite de romero','Aceite de ricino','Aceite de coco'],             [11,8,2],     'warm',   'dleg5');
+makeDoughnut ('d6', ['Menos caída','Crecimiento acelerado','Hidratación profunda','Mayor brillo'],[9,5,5,1],'gold','dleg6');
+makeDoughnut ('d7', ['Toda la noche','Menos de 30 min','30 min – 2 horas'],              [8,5,5],      'forest', 'dleg7');
+makeDoughnut ('d8', ['18 – 24 años','25 – 34 años'],                                    [17,1],       'caoba',  'dleg8');
+
+/* ══ TABS ══ */
+function switchTab(e, id) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => { b.classList.remove('active'); b.setAttribute('aria-selected','false'); });
+  document.getElementById('panel-' + id).classList.add('active');
+  e.currentTarget.classList.add('active');
+  e.currentTarget.setAttribute('aria-selected','true');
+}
+
+/* ══ SCROLL ANIMATION ══ */
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.style.animationPlayState = 'running';
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.08 });
+
+document.querySelectorAll('.chart-card, .stat-card').forEach(el => {
+  el.style.animationPlayState = 'paused';
+  observer.observe(el);
+});
+</script>
+</body>
+</html>
